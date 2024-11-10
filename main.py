@@ -42,6 +42,9 @@ def generate_voice(message):
         with open(audio_file, 'rb') as audio:
             bot.send_voice(user_id, audio)
 
+        with open(audio_file, 'rb') as audio:
+            bot.send_audio(user_id, audio)
+
         # Удаляем файл после отправки
         if os.path.exists(audio_file):
             os.remove(audio_file)
