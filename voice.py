@@ -16,6 +16,6 @@ def generate_audio(text: str, voice: str):
         voice=voice,
         model="eleven_multilingual_v2"
     )
-    name = "audio.mp3"
+    name = "Audio/audio.mp3"
     save(audio, name)
     return name
