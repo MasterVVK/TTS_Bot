@@ -1,6 +1,7 @@
 from elevenlabs import save
 from elevenlabs.client import ElevenLabs
 import config
+import uuid  # Импортируем модуль для генерации случайных имен файлов
 
 client = ElevenLabs(
     api_key=config.elevenlabs_api_key,
@@ -16,6 +17,7 @@ def generate_audio(text: str, voice: str):
         voice=voice,
         model="eleven_multilingual_v2"
     )
-    name = "Audio/audio.mp3"
-    save(audio, name)
-    return name
+    # Генерация случайного имени файла
+    unique_filename = f"Audio/{uuid.uuid4().hex}.mp3"
+    save(audio, unique_filename)
+    return unique_filename

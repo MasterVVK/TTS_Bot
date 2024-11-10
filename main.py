@@ -1,6 +1,7 @@
 import telebot
 import config
 import voice
+import os  # Импортируем модуль для работы с файловой системой
 
 API_TOKEN = config.bot_token
 
@@ -16,16 +17,20 @@ for v in voices:
 
 selected_voice = {}
 
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Привет! Я бот для создания озвучки! Выбери голос, который будет использоваться при создании озвучки:",
+    bot.reply_to(message,
+                 "Привет! Я бот для создания озвучки! Выбери голос, который будет использоваться при создании озвучки:",
                  reply_markup=voice_buttons)
+
 
 @bot.message_handler(func=lambda message: message.text in [v['name'] for v in voices])
 def voice_selected(message):
     user_id = message.from_user.id
     selected_voice[user_id] = message.text
     bot.reply_to(message, f"Вы выбрали голос: {message.text}. Теперь введите текст для озвучки:")
+
 
 @bot.message_handler(func=lambda message: True)
 def generate_voice(message):
@@ -36,8 +41,13 @@ def generate_voice(message):
         audio_file = voice.generate_audio(message.text, voice_id)
         with open(audio_file, 'rb') as audio:
             bot.send_voice(user_id, audio)
+
+        # Удаляем файл после отправки
+        if os.path.exists(audio_file):
+            os.remove(audio_file)
     else:
         bot.reply_to(message, "Сначала выберите голос командой /start")
+
 
 if __name__ == "__main__":
     bot.polling(none_stop=True)
